@@ -1,4 +1,4 @@
-from aiogram import Bot, Router, types
+from aiogram import Router, types
 from aiogram.filters import Command
 
 from src.keyboards.start_keyboard import get_start_keyboard

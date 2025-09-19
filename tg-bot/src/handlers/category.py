@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.core.config import app_settings, uuid_regex
 from src.keyboards.categories_keyboard import get_categories_keyboard
 from src.keyboards.subcategories_keyboard import construct_subcategories_keyboard
-from src.services import CategoryService, SubcategoryService
+from src.services import CategoryService
 
 router = Router()
 

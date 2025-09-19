@@ -4,8 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.handlers.cart import router
 from src.services import CartService
 
-from .view import view_cart
-
 
 @router.callback_query(lambda c: c.data == "clear_cart")
 async def clear_cart(

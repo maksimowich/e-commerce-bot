@@ -5,7 +5,7 @@ from uuid import UUID
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db import CategoryOrm, SubcategoryOrm
+from src.db import SubcategoryOrm
 
 
 class SubcategoryService:

@@ -1,7 +1,6 @@
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
-from loguru import logger
 
 from src.handlers.cart import CartState, router
 from src.services import CartService

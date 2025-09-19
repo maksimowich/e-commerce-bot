@@ -11,8 +11,8 @@ RUN pip install --upgrade pip \
 
 RUN apt-get update && apt-get install -y postgresql-client
 
-COPY migrations/ migrations/
-COPY src/ src/
+COPY migrations migrations/
+COPY src src/
 
 RUN mkdir -p /app/logs
 
