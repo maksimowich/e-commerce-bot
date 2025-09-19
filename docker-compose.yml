@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ${POSTGRES__HOST}
+    environment:
+      POSTGRES_DB: ${POSTGRES__DATABASE}
+      POSTGRES_USER: ${POSTGRES__USER}
+      POSTGRES_PASSWORD: ${POSTGRES__PASSWORD}
+    expose:
+      - ${POSTGRES__PORT}
+    healthcheck:
+      test: pg_isready -U ${POSTGRES__USER} -d ${POSTGRES__DATABASE}
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - app-net
+    ports:
+      - "5432:5432"
+
+  tg-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tg-bot
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    restart: on-failure
+    volumes:
+      - tg_bot_logs:/app/logs
+    networks:
+      - app-net
+
+volumes:
+  pg_data:
+  tg_bot_logs:
+
+networks:
+  app-net:
+    external: true
+    name: app-net
