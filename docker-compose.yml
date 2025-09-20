@@ -1,15 +1,15 @@
 services:
   postgres:
     image: postgres:16
-    container_name: ${POSTGRES__HOST}
+    container_name: ${POSTGRES_HOST}
     environment:
-      POSTGRES_DB: ${POSTGRES__DATABASE}
-      POSTGRES_USER: ${POSTGRES__USER}
-      POSTGRES_PASSWORD: ${POSTGRES__PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     expose:
-      - ${POSTGRES__PORT}
+      - ${POSTGRES_PORT}
     healthcheck:
-      test: pg_isready -U ${POSTGRES__USER} -d ${POSTGRES__DATABASE}
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}
       interval: 5s
       timeout: 5s
       retries: 10
@@ -22,11 +22,11 @@ services:
 
   tg-bot:
     build:
-      context: .
-      dockerfile: tg-bot/Dockerfile
+      context: ./tg-bot
+      dockerfile: Dockerfile
     container_name: tg-bot
     env_file:
-      - tg-bot/.env
+      - .env
     depends_on:
       - postgres
     restart: on-failure
@@ -35,9 +35,27 @@ services:
     networks:
       - app-net
 
+  django-admin:
+    build:
+      context: ./django-admin
+      dockerfile: Dockerfile
+    container_name: django-admin
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - tg-bot
+    restart: on-failure
+    volumes:
+      - static_volume:/opt/app/static/
+    networks:
+      - app-net
+
 volumes:
   pg_data:
   tg_bot_logs:
+  static_volume:
 
 networks:
   app-net:

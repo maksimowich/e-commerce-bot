@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -7,12 +8,12 @@ uuid_regex = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-
 
 
 class TgConfig(BaseModel):
-    bot_token: str
+    bot_token: str = os.getenv('TG_BOT_TOKEN')
 
 
 class YookassaConfig(BaseModel):
-    account_id: str
-    secret_key: str
+    account_id: str = os.getenv('YOOKASSA_ACCOUNT_ID')
+    secret_key: str = os.getenv('YOOKASSA_SECRET_KEY')
 
 
 class PostgresConfig(BaseModel):
@@ -20,7 +21,7 @@ class PostgresConfig(BaseModel):
     password: str
     host: str
     port: int
-    database: str
+    db: str
     schema_: str = Field(alias="schema")
     echo: bool = False
     echo_pool: bool = False
@@ -29,11 +30,11 @@ class PostgresConfig(BaseModel):
 
     @property
     def async_url(self) -> str:
-        return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+        return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
 
     @property
     def sync_url(self) -> str:
-        return f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+        return f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
 
 
 class FormsConfig(BaseModel):
@@ -48,15 +49,13 @@ class Settings(BaseSettings):
     postgres: PostgresConfig
     forms: FormsConfig = FormsConfig()
 
-    excel_filepath: str
-
     model_config = SettingsConfigDict(
         env_file=(
             Path(__file__).resolve().parent.parent.parent / ".env",
             Path(__file__).resolve().parent.parent.parent / ".env.template",
         ),
         case_sensitive=False,
-        env_nested_delimiter="__",
+        env_nested_delimiter="_",
         extra="allow",
     )
 

@@ -50,16 +50,19 @@ async def show_products(
             callback_data=f"add_to_cart_product_{product.id}",
         )
         if product.photo_link:
-            await message.answer_photo(
-                photo=FSInputFile(product.photo_link),
-                caption=text,
-                reply_markup=builder.as_markup()
-            )
-        else:
-            await message.answer(
-                text=text,
-                reply_markup=builder.as_markup()
-            )
+            try:
+                await message.answer_photo(
+                    photo=FSInputFile(product.photo_link),
+                    caption=text,
+                    reply_markup=builder.as_markup()
+                )
+                continue
+            except Exception:
+                pass
+        await message.answer(
+            text=text,
+            reply_markup=builder.as_markup()
+        )
 
     builder = InlineKeyboardBuilder()
     if current_page > 0:
